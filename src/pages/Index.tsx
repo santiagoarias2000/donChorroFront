@@ -11,15 +11,28 @@ import aguardiente from "@/assets/aguardiente.jpg";
 import cigarettes from "@/assets/cigarettes.jpg";
 import { FeaturedSection } from "@/components/FeaturedSection";
 import { PopularProductsSection } from "@/components/PopularProductsSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AgeModal } from "@/components/AgeModal";
 
 const Index = () => {
-  const [showAgeModal, setShowAgeModal] = useState(true);
+    const [showAgeModal, setShowAgeModal] = useState(false);
+
+  useEffect(() => {
+    const confirmed = localStorage.getItem("ageConfirmed");
+
+    if (!confirmed) {
+      setShowAgeModal(true);
+    }
+  }, []);
+
+  const handleConfirm = () => {
+    localStorage.setItem("ageConfirmed", "true");
+    setShowAgeModal(false);
+  };
   return (
     <div className="min-h-screen bg-background">
       {showAgeModal && (
-        <AgeModal onConfirm={() => setShowAgeModal(false)} />
+        <AgeModal onConfirm={handleConfirm} />
       )}
       <Navigation />
       <Hero />
