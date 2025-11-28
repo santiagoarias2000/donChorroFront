@@ -4,11 +4,13 @@ import { useState } from "react";
 import logo from "@/assets/logo.svg"
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
+import { LoginModal } from "./LoginModal";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -45,7 +47,7 @@ export const Navigation = () => {
             <div className="hidden md:flex items-center space-x-10">
               <a
                 href="/licores"
-                className="text-white  transition-colors font-black text-lg uppercase tracking-wide
+                className="text-white rounded-full transition-colors font-black text-lg uppercase tracking-wide
              flex items-center gap-2
              hover:scale-105
              hover:rounded-full
@@ -104,7 +106,8 @@ export const Navigation = () => {
                   hover:shadow-lg       
                 hover:scale-105 
                 hover:rounded-full
-                hover:p-2  ">
+                hover:p-2  "
+                onClick={() => setIsLoginOpen(true)}>
                 <User className="h-5 w-5" />
               </Button>
               <Link to="/carrito">
@@ -176,6 +179,7 @@ export const Navigation = () => {
           )}
         </div>
       </div>
+      <LoginModal open={isLoginOpen} onOpenChange={setIsLoginOpen} />
     </nav>
   );
 };
