@@ -3,33 +3,40 @@ import heroBg from "@/assets/slider 1.jpg";
 import { useEffect, useState } from "react";
 
 export const Hero = () => {
-const [deferredPrompt, setDeferredPrompt] = useState(null);
+const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
-// Detecta si ya está instalada
-useEffect(() => {
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-   (navigator as unknown as { standalone?: boolean }).standalone === true;
+// Detectar si es iOS (Safari)
+const isIOS = () => {
+  return (
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  );
+};
 
-  if (isStandalone) {
-    alert("Usted ya tiene instalada la aplicación.");
-  }
-}, []);
+// Detecta si está instalada
+const isAppInstalled = () => {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches;
 
-// Detecta si se puede instalar
+  const iosStandalone =
+    "standalone" in navigator &&
+    (navigator as Navigator & { standalone?: boolean }).standalone === true;
+
+  return standalone || iosStandalone;
+};
+
+// Solo Android escucha beforeinstallprompt
 useEffect(() => {
   const handler = (e) => {
     e.preventDefault();
     setDeferredPrompt(e);
-    console.log("PWA instalable");
+    console.log("PWA instalable (Android)");
   };
 
   window.addEventListener("beforeinstallprompt", handler);
-
   return () => window.removeEventListener("beforeinstallprompt", handler);
 }, []);
 
-// Detecta cuando se instala
+// Detecta si se instaló (solo Android)
 useEffect(() => {
   const installedHandler = () => {
     alert("La aplicación ya está instalada.");
@@ -38,36 +45,44 @@ useEffect(() => {
   window.addEventListener("appinstalled", installedHandler);
   return () => window.removeEventListener("appinstalled", installedHandler);
 }, []);
-const isAppInstalled = () => {
-  const standalone = window.matchMedia("(display-mode: standalone)").matches;
 
-  // iOS Safari
-  const isIOSStandalone =
-    "standalone" in navigator &&
-    (navigator as Navigator & { standalone?: boolean }).standalone === true;
-
-  return standalone || isIOSStandalone;
-};
-
-// Función para instalar
+// Lógica del botón de instalar
 const install = async () => {
+  // 1️⃣ Ya instalada
   if (isAppInstalled()) {
     alert("✔ La aplicación ya está instalada en tu dispositivo.");
     return;
   }
 
-  // Si no hay prompt disponible
+  // 2️⃣ iPhone → mostrar mensaje especial
+  if (isIOS()) {
+    alert(
+      "📱 Para instalar la aplicación en iPhone:\n\n" +
+        "1. Toca el botón Compartir (cuadrado con flecha ↑)\n" +
+        "2. Selecciona 'Agregar al inicio'\n"
+    );
+    return;
+  }
+
+  // 3️⃣ Android sin prompt disponible
   if (!deferredPrompt) {
     alert("⚠ La instalación no está disponible en este momento.");
     return;
   }
 
-  // Mostrar prompt nativo
+  // 4️⃣ Android → mostrar prompt nativo
   deferredPrompt.prompt();
-
   const result = await deferredPrompt.userChoice;
-  console.log("Install result:", result.outcome);
+
+  console.log("Resultado:", result.outcome);
+
+  if (result.outcome === "accepted") {
+    alert("✔ Instalación aceptada");
+  } else {
+    alert("❌ Instalación cancelada");
+  }
 };
+
   return (
     <section className="relative lg:min-h-[45vh] min-h-[40vh] overflow-hidden bg-white">
       <div
