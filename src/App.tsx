@@ -14,6 +14,7 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import AdminProductsPage from "./pages/private/AdminProductsPage";
 import AdminUsersPage from "./pages/private/AdminUsersPage";
 import AdminCartPage from "./pages/private/AdminCartPage";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +37,9 @@ const App = () => (
             <Route path="usuarios" element={<AdminUsersPage />} />
             <Route path="carrito" element={<AdminCartPage />} />
           </Route>
+          
         </Routes>
+         <WhatsAppButton />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

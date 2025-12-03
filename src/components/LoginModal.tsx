@@ -50,13 +50,13 @@ const handleSubmit = async (e: React.FormEvent) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-white border-burgundy">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold text-[#770f3a]  text-center">
+          <DialogTitle className="font-nulshock text-3xl font-bold text-[#770f3a]  text-center">
             Iniciar sesión
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#770f3a] text-1xl  font-semibold">
+            <Label htmlFor="email" className="font-poppinsSemi text-[#770f3a] text-1xl  font-semibold">
               Correo Electrónico
             </Label>
             <Input
@@ -70,7 +70,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#770f3a] text-1xl font-semibold">
+            <Label htmlFor="password" className="font-poppinsSemi text-[#770f3a] text-1xl font-semibold">
               Contraseña
             </Label>
             <Input
@@ -87,7 +87,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-1xl text-[#F6C600] font-semibold"
+            className="font-poppinsSemi w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-1xl text-[#F6C600] font-semibold"
           >
            Ingresar
           </Button>

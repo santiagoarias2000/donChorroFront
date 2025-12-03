@@ -96,3 +96,28 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'Nulshock';
+  src: url('/src/assets/fonts/Nulshock Bd.otf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PoppinsSemiBold";
+  src: url("/src/assets/fonts/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PoppinsRegular";
+  src: url("/src/assets/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+html, body {
+  overflow-x: hidden;
+}

@@ -29,12 +29,12 @@ export const Navigation = () => {
 
       {/* Main burgundy navigation */}
       <div className="" style={{ "backgroundColor": "#770f3a" }}>
-        <div className="container mx-auto px-1">
+        <div className="w-full px-2 max-w-7xl mx-auto">
           <div className="flex items-center justify-between h-20">
             {/* Logo Space */}
             <div className="flex items-center">
               <Link to="/">
-                <div className="w-60 h-16 flex items-center justify-center">
+                <div className="w-40 md:w-60 h-16 flex items-center justify-center">
 
                   <img src={logo} alt="logo" className="max-w-none" />
 
@@ -47,7 +47,7 @@ export const Navigation = () => {
             <div className="hidden md:flex items-center space-x-10">
               <a
                 href="/licores"
-                className="text-white rounded-full transition-colors font-black text-lg uppercase tracking-wide
+                className="font-nulshock text-white rounded-full transition-colors font-black text-lg uppercase tracking-wide
              flex items-center gap-2
              hover:scale-105
              hover:rounded-full
@@ -59,7 +59,7 @@ export const Navigation = () => {
               >
                 Licores <ChevronUp />
               </a>
-              <a href="/cervezas" className="text-white transition-colors font-black text-lg uppercase tracking-wide
+              <a href="/cervezas" className="font-nulshock text-white transition-colors font-black text-lg uppercase tracking-wide
              flex items-center gap-2 hover:bg-[#F6C600]   
                 hover:text-[#770f3a]   
                   hover:shadow-lg       
@@ -68,7 +68,7 @@ export const Navigation = () => {
                 hover:p-2   ">
                 Cervezas <ChevronUp />
               </a>
-              <a href="/golosinas" className="text-white  transition-colors font-black text-lg uppercase tracking-wide
+              <a href="/golosinas" className="font-nulshock text-white  transition-colors font-black text-lg uppercase tracking-wide
              flex items-center gap-2 hover:bg-[#F6C600]   
                 hover:text-[#770f3a]   
                   hover:shadow-lg       
@@ -77,7 +77,7 @@ export const Navigation = () => {
                 hover:p-2   ">
                 Golosinas <ChevronUp />
               </a>
-              <a href="#mas" className="text-white  transition-colors font-black text-lg uppercase tracking-wide
+              <a href="#mas" className="font-nulshock text-white  transition-colors font-black text-lg uppercase tracking-wide
              flex items-center gap-2 hover:bg-[#F6C600]   
                 hover:text-[#770f3a]   
                   hover:shadow-lg       
@@ -162,16 +162,16 @@ export const Navigation = () => {
           {isOpen && (
             <div className="md:hidden py-4 border-t border-burgundy-light">
               <div className="flex flex-col space-y-4">
-                <a href="/licores" className="text-white hover:text-gold transition-colors font-semibold uppercase">
+                <a href="/licores" className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase">
                   Licores
                 </a>
-                <a href="/cervezas" className="text-white hover:text-gold transition-colors font-semibold uppercase">
+                <a href="/cervezas" className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase">
                   Cervezas
                 </a>
-                <a href="/golosinas" className="text-white hover:text-gold transition-colors font-semibold uppercase">
+                <a href="/golosinas" className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase">
                   Golosinas
                 </a>
-                <a href="#mas" className="text-white hover:text-gold transition-colors font-semibold uppercase">
+                <a href="#mas" className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase">
                   Más
                 </a>
               </div>

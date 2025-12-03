@@ -2,85 +2,73 @@ import { Facebook, Instagram, Twitter, Phone, Mail, MapPin } from "lucide-react"
 
 export const Footer = () => {
   return (
-    <footer className=" border-t border-border" style={{"backgroundColor":"#1a1a1a"}}>
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div>
-            <h3 className="text-2xl font-bold mb-4">
-              <span className="text-foreground">DON</span>
-              <span className="text-primary ml-2">CHORRO</span>
-            </h3>
-            <p className="text-muted-foreground">
-              Tu licorera de confianza. El licor va hasta ti.
-            </p>
-          </div>
+    <footer className="relative bg-[#1A1A1A] text-white pt-16 pb-6 px-6 md:px-20 overflow-hidden">
 
-          {/* Contact */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-foreground">Contacto</h4>
-            <div className="space-y-3">
-              <div className="flex items-center text-muted-foreground">
-                <Phone className="h-4 w-4 mr-2 text-primary" />
-                <span>+57 300 123 4567</span>
-              </div>
-              <div className="flex items-center text-muted-foreground">
-                <Mail className="h-4 w-4 mr-2 text-primary" />
-                <span>info@donchorro.com</span>
-              </div>
-              <div className="flex items-center text-muted-foreground">
-                <MapPin className="h-4 w-4 mr-2 text-primary" />
-                <span>Tunja, Colombia</span>
-              </div>
-            </div>
-          </div>
+      {/* Imagen del mono: visible en móvil también */}
+      <img
+  src="/src/assets/mono-negro-cortado.png"
+  alt="Monkey"
+  className="hidden md:block absolute right-0 bottom-0 h-full opacity-100 brightness-40 pointer-events-none select-none"
+/>
 
-          {/* Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-foreground">Enlaces</h4>
-            <div className="space-y-2">
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
-                Términos y Condiciones
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
-                Política de Privacidad
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
-                Preguntas Frecuentes
-              </a>
-            </div>
-          </div>
 
-          {/* Social */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-foreground">Síguenos</h4>
-            <div className="flex space-x-4">
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
+      {/* GRID del contenido */}
+      <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12 z-10 
+                      text-center md:text-left items-center md:items-start">
+
+        {/* Logo */}
+        <div className="flex flex-col items-center md:items-start">
+          <img
+            src="/src/assets/don-chorro-imagotipo.png"
+            alt="Don Chorro Logo"
+            className="w-56 md:w-80 mb-4"
+          />
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Don Chorro. Todos los derechos reservados.</p>
-          <p className="text-sm mt-2">Consumir bebidas alcohólicas en exceso es perjudicial para la salud. Prohibida su venta a menores de edad.</p>
+        {/* Nuestra empresa */}
+        <div>
+          <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
+            NUESTRA EMPRESA
+          </h3>
+          <p className="text-sm leading-relaxed max-w-xs mx-auto md:mx-0 font-poppinsSemi">
+            Don Chorro, empresa tunjana fundada en 2019, dedicada a la venta de
+            licores y comprometida con ofrecer calidad y servicio en toda la
+            ciudad de Tunja.
+          </p>
         </div>
+
+        {/* Productos */}
+        <div>
+          <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
+            PRODUCTOS
+          </h3>
+          <ul className="space-y-2 text-sm font-poppinsSemi">
+            <li>Calidad</li>
+            <li>Productos legales</li>
+            <li>Mejores costos</li>
+            <li>Gran trayectoria</li>
+          </ul>
+        </div>
+
+        {/* Contacto */}
+        <div className="md:ml-[-140px]">
+          <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
+            CONTACTO
+          </h3>
+          <ul className="space-y-3 text-sm font-poppinsSemi">
+            <li className="flex justify-center md:justify-start items-center gap-2">
+              <MapPin size={18} /> Av norte 36 – 68, Semáforo de la sexta
+            </li>
+            <li className="flex justify-center md:justify-start items-center gap-2">
+              <Phone size={18} /> +57 321 356 5261
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Línea inferior */}
+      <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-black py-4 text-center text-sm z-10 mt-10 font-poppinsSemi">
+        © 2025 donchorro
       </div>
     </footer>
   );

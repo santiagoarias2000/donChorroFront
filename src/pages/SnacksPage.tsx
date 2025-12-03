@@ -52,7 +52,7 @@ export const SnacksPage = () => {
         <div className="min-h-screen bg-background">
             <Navigation />
 
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
+            <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
                 GOLOSINAS/SNACKS/BEBIDAS
             </h1>
             <div className="  mx-auto
@@ -64,7 +64,7 @@ export const SnacksPage = () => {
   xl:max-w-[1600px] ">
                 {/* Page Title */}
 
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="font-poppinsSemi flex flex-col lg:flex-row gap-6">
                     {/* Sidebar Filters */}
                     <ProductFilters
                         tamaños={selectedTamaños}
@@ -74,7 +74,7 @@ export const SnacksPage = () => {
 
                     {/* Products Grid */}
                     <div className="flex-1">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                        <div className="font-poppinsSemi grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
                             {currentProducts.map((product) => (
                                 <PopularProductCard
                                     key={product.id}

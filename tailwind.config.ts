@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
+
 
 export default {
   darkMode: ["class"],
@@ -13,6 +15,11 @@ export default {
       },
     },
     extend: {
+       fontFamily: {
+    nulshock: ["Nulshock", "sans-serif"],
+    poppinsSemi: ["PoppinsSemiBold", "sans-serif"],
+    poppinsRegu: ["PoppinsRegular", "sans-serif"],
+  },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -92,7 +99,8 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;
