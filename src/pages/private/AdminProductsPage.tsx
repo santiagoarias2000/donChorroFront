@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { ProductFormModal } from "@/components/ProductFormModal";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import ApiBack from "@/utils/ApiBack";
 
 type Product = {
   id: string;
@@ -28,6 +29,8 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchProducts();
@@ -35,10 +38,35 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      toast.success("Productos cargados correctamente");
+    setLoading(true);
+      setError(null); // limpiamos error previo
+
+      const response = await fetch(
+        ApiBack.URL + ApiBack.PRODUCT_LIST
+      );
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          toast({
+            title: "Error",
+            description: "La categoría solicitada no es válida.",
+          });
+        }
+        throw new Error(`Error al cargar: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setProducts(data);
+      toast({
+        title: "Existoso",
+        description: "Producto cargado.",
+      });
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error("Error al cargar productos");
+      toast({
+        title: "Error",
+        description: "Error al cargar el producto.",
+      });
     } finally {
       setLoading(false);
     }
@@ -48,10 +76,16 @@ export default function AdminProductsPage() {
     if (!confirm("¿Estás seguro de eliminar este producto?")) return;
 
     try {
-      toast.success("Producto eliminado correctamente");
+      toast({
+        title: "Existoso",
+        description: "Producto eliminaso.",
+      });
     } catch (error) {
       console.error("Error deleting product:", error);
-      toast.error("Error al eliminar producto");
+      toast({
+        title: "Error",
+        description: "No se puede eliminar el producto.",
+      });
     }
   };
 
@@ -74,12 +108,12 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 font-nulshock">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-burgundy">Productos</h1>
+        <h1 className="text-3xl font-bold text-[#770f3a] font-nulshock">Productos</h1>
         <Button
           onClick={handleCreateNew}
-          className="bg-burgundy hover:bg-burgundy/90 text-white"
+          className="bg-[#770f3a] hover:bg-[#770f3a]/90 text-white"
         >
           <Plus className="h-5 w-5 mr-2" />
           Crear Producto
@@ -89,7 +123,7 @@ export default function AdminProductsPage() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-burgundy hover:bg-burgundy">
+            <TableRow className="bg-[#770f3a] hover:bg-[#770f3a]">
               <TableHead className="text-white font-semibold">Producto</TableHead>
               <TableHead className="text-white font-semibold">Categoría</TableHead>
               <TableHead className="text-white font-semibold">Precio</TableHead>

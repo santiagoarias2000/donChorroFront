@@ -6,7 +6,7 @@ import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from "sonner";
 
-type Product = {
+type User = {
   id: string;
   name: string;
   category: string;
@@ -17,23 +17,23 @@ type Product = {
   image_url?: string;
 };
 
-interface ProductFormModalProps {
+interface UserFormModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-  product?: Product;
+  user?: User;
 }
 
-export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: ProductFormModalProps) => {
+export const UserFormModal = ({ open, onOpenChange, onSuccess, user }: UserFormModalProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: product?.name || "",
-    category: product?.category || "",
-    price: product?.price || "",
-    size: product?.size || "",
-    brand: product?.brand || "",
-    stock: product?.stock || "",
-    image_url: product?.image_url || "",
+    // name: product?.name || "",
+    // category: product?.category || "",
+    // price: product?.price || "",
+    // size: product?.size || "",
+    // brand: product?.brand || "",
+    // stock: product?.stock || "",
+    // image_url: product?.image_url || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
