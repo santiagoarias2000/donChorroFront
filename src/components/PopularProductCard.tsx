@@ -1,4 +1,7 @@
 import { ShoppingCart, Heart, Eye, Plus } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
+
 
 interface PopularProductCardProps {
   image?: string;
@@ -7,17 +10,32 @@ interface PopularProductCardProps {
 }
 
 export const PopularProductCard = ({ image, name, price }: PopularProductCardProps) => {
+  const { addToCart } = useCart();
+
   return (
     <div className="bg-[#f5f5f5] rounded-lg overflow-hidden relative group transition-all duration-300 hover:shadow-lg">
+      
       {/* Add Button */}
-      <button className="    absolute top-3 right-3 z-10
-    p-3
-    rounded-xl
-    bg-[#770f3a]
-    hover:bg-[#a31250]
-    transition-all duration-300 shadow-md
-    hover:-translate-y-1" >
-        <Plus className="h-6 w-6  text-yellow-400" strokeWidth={4}/>
+      <button
+      onClick={() => {
+    addToCart({
+      id: Date.now(),
+      name,
+      price,
+    });
+
+    toast.success(`"${name}" agregado al carrito`, {
+      icon: "🛒",
+      style: {
+        background: "#770f3a",
+        color: "white",
+        border: "2px solid #a31250",
+      },
+    });
+  }}
+        className="absolute top-3 right-3 z-10 p-3 rounded-xl bg-[#770f3a] hover:bg-[#a31250] transition-all duration-300 shadow-md hover:-translate-y-1"
+      >
+        <Plus className="h-6 w-6 text-yellow-400" strokeWidth={4} />
       </button>
 
       {/* Product Image */}

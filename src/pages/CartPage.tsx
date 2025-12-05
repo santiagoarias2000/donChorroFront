@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { CartItem } from "@/components/CartItem";
@@ -6,41 +5,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PaymentModal } from "@/components/PaymentModal";
-
-
+import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 export const CartPage = () => {
-  // Example cart data - replace with backend data
-const [paymentOpen, setPaymentOpen] = useState(false);
-
-
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Cerveza Costeña", price: 20000, quantity: 1 },
-    { id: 2, name: "Cerveza Costeña", price: 20000, quantity: 1 },
-    { id: 3, name: "Cerveza Costeña", price: 20000, quantity: 1 },
-  ]);
-
-  const handleRemove = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const handleIncrement = (id: number) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecrement = (id: number) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const { cartItems, removeFromCart, increment, decrement } = useCart();
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce(
@@ -48,13 +18,10 @@ const [paymentOpen, setPaymentOpen] = useState(false);
     0
   );
 
- 
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Page Title */}
       <div className="bg-muted py-6">
         <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center text-muted-foreground uppercase tracking-wider">
           SU CARRITO
@@ -63,7 +30,7 @@ const [paymentOpen, setPaymentOpen] = useState(false);
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Cart Items Section */}
+          
           <div className="flex-1">
             <div className="border-2 border-border rounded-none">
               <div className="bg-background border-b-2 border-border px-6 py-4">
@@ -73,15 +40,19 @@ const [paymentOpen, setPaymentOpen] = useState(false);
               </div>
 
               <div className="font-poppinsSemi p-6 space-y-6">
+                {cartItems.length === 0 && (
+                  <p className="text-center text-muted-foreground">El carrito está vacío</p>
+                )}
+
                 {cartItems.map((item) => (
                   <CartItem
                     key={item.id}
                     name={item.name}
                     price={item.price}
                     quantity={item.quantity}
-                    onRemove={() => handleRemove(item.id)}
-                    onIncrement={() => handleIncrement(item.id)}
-                    onDecrement={() => handleDecrement(item.id)}
+                    onRemove={() => removeFromCart(item.id)}
+                    onIncrement={() => increment(item.id)}
+                    onDecrement={() => decrement(item.id)}
                   />
                 ))}
               </div>
@@ -96,7 +67,6 @@ const [paymentOpen, setPaymentOpen] = useState(false);
             </Link>
           </div>
 
-          {/* Summary Section */}
           <div className="lg:w-96">
             <div className="bg-muted/30 p-6 rounded space-y-4">
               <div className="flex justify-between items-center pb-4 border-b border-border">
@@ -104,21 +74,13 @@ const [paymentOpen, setPaymentOpen] = useState(false);
                 <span className="font-poppinsSemi font-semibold">${totalPrice.toLocaleString()} cop</span>
               </div>
 
-              <div className="space-y-2">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="flex justify-between text-sm">
-                    <span className="font-poppinsSemi text-muted-foreground">Total (Impuestos)</span>
-                    <span className="font-poppinsSemi text-foreground">$10,000 cop</span>
-                  </div>
-                ))}
-              </div>
-
-           <Button
-  onClick={() => setPaymentOpen(true)}
-  className="font-poppinsSemi w-full bg-muted-foreground hover:bg-muted-foreground/90 text-white rounded-full py-6 text-lg font-semibold uppercase"
->
-  Pagar
-</Button>
+              <Button
+                onClick={() => setPaymentOpen(true)}
+                disabled={cartItems.length === 0}
+                className="font-poppinsSemi w-full bg-muted-foreground hover:bg-muted-foreground/90 text-white rounded-full py-6 text-lg font-semibold uppercase"
+              >
+                Pagar
+              </Button>
 
               <div className="flex justify-between items-center pt-4 border-t border-border">
                 <span className="font-poppinsSemi font-semibold">Total (compra)</span>
@@ -130,8 +92,6 @@ const [paymentOpen, setPaymentOpen] = useState(false);
       </div>
 
       <PaymentModal open={paymentOpen} onOpenChange={setPaymentOpen} total={totalPrice} />
-
-
       <Footer />
     </div>
   );

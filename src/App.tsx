@@ -23,26 +23,30 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/cervezas" element={<ProductsPage />} />
-          <Route path="/carrito" element={<CartPage />} />
-          <Route path="/golosinas" element={<SnacksPage />} />
-          <Route path="/licores" element={<LiquorsPage />} />
-          <Route path="/buscar" element={<SearchPage />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/admin" element={<DashboardLayout />}>
-            <Route path="productos" element={<AdminProductsPage />} />
-            <Route path="usuarios" element={<AdminUsersPage />} />
-            <Route path="carrito" element={<AdminCartPage />} />
-          </Route>
-          
-        </Routes>
-         <WhatsAppButton />
-      </BrowserRouter>
+        <BrowserRouter>
+
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/cervezas" element={<ProductsPage />} />
+            <Route path="/carrito" element={<CartPage />} />
+            <Route path="/golosinas" element={<SnacksPage />} />
+            <Route path="/licores" element={<LiquorsPage />} />
+            <Route path="/buscar" element={<SearchPage />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route path="productos" element={<AdminProductsPage />} />
+              <Route path="usuarios" element={<AdminUsersPage />} />
+              <Route path="carrito" element={<AdminCartPage />} />
+            </Route>
+          </Routes>
+
+          <WhatsAppButton />
+
+        </BrowserRouter>
+
     </TooltipProvider>
   </QueryClientProvider>
 );
 
 export default App;
+
