@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import imagen from "@/assets/imagen_cerveza.jpg";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
+import { SlidersHorizontal } from "lucide-react";
 
 interface FilterSection {
   title: string;
   options: string[];
 }
+
 
 interface ProductFiltersProps {
   tamaños?: string[];
@@ -15,9 +19,9 @@ interface ProductFiltersProps {
   marcaOptions?: string[];
 }
 
-export const ProductFilters = ({ 
-  tamaños = [], 
-  marcas = [], 
+export const ProductFilters = ({
+  tamaños = [],
+  marcas = [],
   onFilterChange,
   tamañoOptions = ["355 ml", "330 ml", "473 ml", "Six Pack"],
   marcaOptions = [
@@ -30,10 +34,9 @@ export const ProductFilters = ({
     "Stella",
     "Budweiser",
     "Michelob",
-    "3 Cordilleras"
-  ]
+    "3 Cordilleras",
+  ],
 }: ProductFiltersProps) => {
-
   const handleTamañoChange = (option: string, checked: boolean) => {
     const newTamaños = checked
       ? [...tamaños, option]
@@ -48,22 +51,24 @@ export const ProductFilters = ({
     onFilterChange?.({ tamaños, marcas: newMarcas });
   };
 
-  return (
-    <aside className="w-full lg:w-64 bg-white border border-gray-200 rounded-lg p-6 h-fit">
-      {/* Tamaño Section */}
+  const FilterContent = () => (
+    <>
+      {/* Tamaños */}
       <div className="mb-8">
         <h3 className="font-bold text-foreground mb-4 text-lg">Tamaño</h3>
         <div className="space-y-3">
           {tamañoOptions.map((option) => (
             <div key={option} className="flex items-center space-x-2">
-              <Checkbox 
+              <Checkbox
                 id={`tamano-${option}`}
                 checked={tamaños.includes(option)}
-                onCheckedChange={(checked) => handleTamañoChange(option, checked as boolean)}
+                onCheckedChange={(checked) =>
+                  handleTamañoChange(option, checked as boolean)
+                }
               />
               <Label
                 htmlFor={`tamano-${option}`}
-                className="text-sm font-normal cursor-pointer text-foreground"
+                className="text-sm cursor-pointer"
               >
                 {option}
               </Label>
@@ -72,20 +77,22 @@ export const ProductFilters = ({
         </div>
       </div>
 
-      {/* Marca Section */}
+      {/* Marcas */}
       <div className="mb-8">
         <h3 className="font-bold text-foreground mb-4 text-lg">Marca</h3>
         <div className="space-y-3">
           {marcaOptions.map((option) => (
             <div key={option} className="flex items-center space-x-2">
-              <Checkbox 
+              <Checkbox
                 id={`marca-${option}`}
                 checked={marcas.includes(option)}
-                onCheckedChange={(checked) => handleMarcaChange(option, checked as boolean)}
+                onCheckedChange={(checked) =>
+                  handleMarcaChange(option, checked as boolean)
+                }
               />
               <Label
                 htmlFor={`marca-${option}`}
-                className="text-sm font-normal cursor-pointer text-foreground"
+                className="text-sm cursor-pointer"
               >
                 {option}
               </Label>
@@ -97,7 +104,32 @@ export const ProductFilters = ({
       {/* Promotional Banner Placeholder */}
       <div className="">
           <img src={imagen} alt="imagen.tsx" />
+
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* MOBILE: Accordion */}
+      <div className="lg:hidden">
+        <Accordion type="single" collapsible className="mb-6">
+          <AccordionItem value="filters">
+            <AccordionTrigger className="text-lg font-semibold flex items-center gap-2">
+              <SlidersHorizontal className="h-5 w-5" />
+              Filtrar productos
+            </AccordionTrigger>
+            <AccordionContent className="mt-4 p-4 border rounded-lg">
+              <FilterContent />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      {/* DESKTOP: Sidebar fijo */}
+      <aside className="hidden lg:block w-full lg:w-64 bg-white border border-gray-200 rounded-lg p-6 h-fit">
+        <FilterContent />
+      </aside>
+    </>
   );
 };

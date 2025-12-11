@@ -60,7 +60,7 @@ export const Footer = () => {
               <MapPin size={18} /> Av norte 36 – 68, Semáforo de la sexta
             </li>
             <li className="flex justify-center md:justify-start items-center gap-2">
-              <Phone size={18} /> +57 321 356 5261
+              <Phone size={18} /> +57 313 313 33 33
             </li>
           </ul>
         </div>

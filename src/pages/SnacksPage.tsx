@@ -24,7 +24,7 @@ interface Product {
     active: boolean;
     created_date: string;
     updated_date: string;
-    imagen:string;
+    imagen: string;
 }
 
 export const SnacksPage = () => {
@@ -73,8 +73,20 @@ export const SnacksPage = () => {
         <div className="min-h-screen bg-background">
             <Navigation />
 
-            <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
-                GOLOSINAS/SNACKS/BEBIDAS
+            <h1 className="
+    font-nulshock 
+    text-xl sm:text-2xl md:text-4xl 
+    font-bold 
+    text-center 
+    break-words 
+    leading-tight
+    mb-14 
+    p-5  
+    text-[#808080] 
+    uppercase 
+    bg-[#e6e6e6]
+">
+                GOLOSINAS / SNACKS / BEBIDAS
             </h1>
             <div className="  mx-auto
   px-2 sm:px-4     
