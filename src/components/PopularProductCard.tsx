@@ -1,12 +1,12 @@
 import { ShoppingCart, Heart, Eye, Plus } from "lucide-react";
 
 interface PopularProductCardProps {
-  image?: string;
+  imagen?: string;
   name: string;
   price: number;
 }
 
-export const PopularProductCard = ({ image, name, price }: PopularProductCardProps) => {
+export const PopularProductCard = ({ imagen, name, price }: PopularProductCardProps) => {
   return (
     <div className="bg-[#f5f5f5] rounded-lg overflow-hidden relative group transition-all duration-300 hover:shadow-lg">
       {/* Add Button */}
@@ -22,9 +22,9 @@ export const PopularProductCard = ({ image, name, price }: PopularProductCardPro
 
       {/* Product Image */}
       <div className="aspect-square bg-white/50 flex items-center justify-center p-6">
-        {image ? (
+        {imagen ? (
           <img
-            src={image}
+            src={imagen}
             alt={name}
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />

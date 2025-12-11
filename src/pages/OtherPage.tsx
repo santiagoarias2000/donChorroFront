@@ -27,19 +27,17 @@ interface Product {
     imagen:string;
 }
 
-export const ProductsPage = () => {
+export const OthersPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTamaños, setSelectedTamaños] = useState<string[]>([]);
     const [selectedMarcas, setSelectedMarcas] = useState<string[]>([]);
     const productsPerPage = 20;
-
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
-
     const fetchProducts = async () => {
         try {
-            const url = ApiBack.URL + ApiBack.PRODUCT_LIST_BEER
+            const url = ApiBack.URL + ApiBack.PRODUCT_LIST_OTHER
             const res = await fetch(url);
             const data = await res.json();
             setProducts(data);
@@ -49,7 +47,6 @@ export const ProductsPage = () => {
             setLoading(false);
         }
     };
-
     // Filter products
     const filteredProducts = products.filter((product) => {
         const matchesTamaño = selectedTamaños.length === 0 || selectedTamaños.includes(product.size);
@@ -77,9 +74,15 @@ export const ProductsPage = () => {
             <Navigation />
 
             <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
-                CERVEZAS
+                Otros
             </h1>
-            <div className="mx-auto px-2 sm:px-4 py-8 w-full max-w-full lg:max-w-[1400px] xl:max-w-[1600px]">
+            <div className="  mx-auto
+  px-2 sm:px-4     
+  py-8
+  w-full
+  max-w-full         
+  lg:max-w-[1400px]  
+  xl:max-w-[1600px] ">
                 {/* Page Title */}
 
                 <div className="font-poppinsSemi flex flex-col lg:flex-row gap-6">
@@ -92,7 +95,7 @@ export const ProductsPage = () => {
 
                     {/* Products Grid */}
                     <div className="flex-1">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                        <div className="font-poppinsSemi grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
                             {currentProducts.map((product) => (
                                 <PopularProductCard
                                     key={product.id}
@@ -142,4 +145,4 @@ export const ProductsPage = () => {
     );
 };
 
-export default ProductsPage;
+export default OthersPage;

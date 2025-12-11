@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ProductFilters } from "@/components/ProductFilters";
@@ -11,29 +11,46 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import ApiBack from "@/utils/ApiBack";
+
+interface Product {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+    stock: number;
+    size: string;
+    active: boolean;
+    created_date: string;
+    updated_date: string;
+    imagen:string;
+}
 
 export const SnacksPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTamaños, setSelectedTamaños] = useState<string[]>([]);
     const [selectedMarcas, setSelectedMarcas] = useState<string[]>([]);
     const productsPerPage = 20;
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // Example data - replace with backend data
-    const allProducts = Array.from({ length: 40 }, (_, i) => {
-        const marcas = ["Aguila", "Poker", "Corona", "Heineken", "Club Colombia"];
-        const tamaños = ["355 ml", "330 ml", "473 ml", "Six Pack"];
-        return {
-            id: i + 1,
-            name: `Cerveza ${marcas[i % marcas.length]}`,
-            price: 20000 + (i * 1000),
-            marca: marcas[i % marcas.length],
-            tamaño: tamaños[i % tamaños.length],
-        };
-    });
+    const fetchProducts = async () => {
+        try {
+            const url = ApiBack.URL + ApiBack.PRODUCT_LIST_CANDY
+            const res = await fetch(url);
+            const data = await res.json();
+            setProducts(data);
+        } catch (error) {
+            console.error("Error cargando productos:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     // Filter products
-    const filteredProducts = allProducts.filter((product) => {
-        const matchesTamaño = selectedTamaños.length === 0 || selectedTamaños.includes(product.tamaño);
-        const matchesMarca = selectedMarcas.length === 0 || selectedMarcas.includes(product.marca);
+    const filteredProducts = products.filter((product) => {
+        const matchesTamaño = selectedTamaños.length === 0 || selectedTamaños.includes(product.size);
+        const matchesMarca = selectedMarcas.length === 0 || selectedMarcas.includes(product.name);
         return matchesTamaño && matchesMarca;
     });
 
@@ -48,11 +65,15 @@ export const SnacksPage = () => {
         setCurrentPage(1); // Reset to first page when filters change
     };
 
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
     return (
         <div className="min-h-screen bg-background">
             <Navigation />
 
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
+            <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center mb-14 p-5  text-[#808080] uppercase bg-[#e6e6e6] ">
                 GOLOSINAS/SNACKS/BEBIDAS
             </h1>
             <div className="  mx-auto
@@ -64,7 +85,7 @@ export const SnacksPage = () => {
   xl:max-w-[1600px] ">
                 {/* Page Title */}
 
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="font-poppinsSemi flex flex-col lg:flex-row gap-6">
                     {/* Sidebar Filters */}
                     <ProductFilters
                         tamaños={selectedTamaños}
@@ -74,12 +95,13 @@ export const SnacksPage = () => {
 
                     {/* Products Grid */}
                     <div className="flex-1">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                        <div className="font-poppinsSemi grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
                             {currentProducts.map((product) => (
                                 <PopularProductCard
                                     key={product.id}
                                     name={product.name}
                                     price={product.price}
+                                    imagen={product.imagen}
                                 />
                             ))}
                         </div>

@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import ApiBack from "@/utils/ApiBack";
+import { useNavigate } from "react-router-dom";
 
 interface LoginModalProps {
   open: boolean;
@@ -16,47 +18,69 @@ export const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
 const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
+  
+  try {
+    const url =ApiBack.URL + ApiBack.LOGIN
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
-    try {
-      if (isLogin) {
-        toast({
-          title: "Bienvenido",
-          description: "Has iniciado sesión correctamente",
-        });
-        onOpenChange(false);
-      } else {
-        toast({
-          title: "Cuenta creada",
-          description: "Revisa tu email para confirmar tu cuenta",
-        });
-        onOpenChange(false);
-      }
-    } catch (error) {
+    const data = await response.json();
+
+    if (!response.ok) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Error de inicio de sesión",
+        description: data.error || "Credenciales incorrectas",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    // GUARDAR USUARIO (opcional)
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    toast({
+      title: "Bienvenido 👋",
+      description: `Hola ${data.user.name || ""}, has iniciado sesión correctamente`,
+    });
+    
+    onOpenChange(false); // Cerrar modal al iniciar sesión
+    navigate("/admin/productos");
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: error.message || "Ocurrió un error inesperado",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-white border-burgundy">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold text-[#770f3a]  text-center">
+          <DialogTitle className="font-nulshock text-3xl font-bold text-[#770f3a]  text-center">
             Iniciar sesión
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#770f3a] text-1xl  font-semibold">
+            <Label htmlFor="email" className="font-poppinsSemi text-[#770f3a] text-1xl  font-semibold">
               Correo Electrónico
             </Label>
             <Input
@@ -70,7 +94,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#770f3a] text-1xl font-semibold">
+            <Label htmlFor="password" className="font-poppinsSemi text-[#770f3a] text-1xl font-semibold">
               Contraseña
             </Label>
             <Input
@@ -86,8 +110,9 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
           <Button
             type="submit"
-            disabled={loading}
-            className="w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-1xl text-[#F6C600] font-semibold"
+            className="font-poppinsSemi w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-1xl text-[#F6C600] font-semibold"
+            onClick={handleSubmit}
+          
           >
            Ingresar
           </Button>

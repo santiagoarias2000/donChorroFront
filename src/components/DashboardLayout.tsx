@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Package, Users, ShoppingCart, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.svg";
 
 export const DashboardLayout = () => {
@@ -10,11 +10,19 @@ export const DashboardLayout = () => {
   const location = useLocation();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+    const { toast } = useToast();
 
 
   const handleLogout = async () => {
-    toast.success("Cierre de sesión exitoso");
+    
+    localStorage.removeItem("user");
+    toast({
+      title: "Hasta pronto 👋",
+      description: `Sesión cerrada correctamente.`,
+    });
+    
     navigate("/");
+    
   };
 
   const isActive = (path: string) => location.pathname === path;

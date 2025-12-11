@@ -111,3 +111,13 @@ All colors MUST be HSL.
   font-style: normal;
 }
 
+@font-face {
+  font-family: "PoppinsRegular";
+  src: url("/src/assets/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+html, body {
+  overflow-x: hidden;
+}

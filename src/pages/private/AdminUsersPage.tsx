@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -9,25 +9,67 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
+import { UserFormModal } from "@/components/UserFormModal";
+import ApiBack from "@/utils/ApiBack";
 type User = {
   id: string;
   email: string;
   name: string;
   password: string;
   created_at: string;
-  active:boolean;
+  active: boolean;
 };
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<User>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleCreateNew = () => {
     setSelectedProduct(null);
     setIsFormOpen(true);
   };
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      setError(null); // limpiamos error previo
+
+      const response = await fetch(
+        ApiBack.URL + ApiBack.USER_LIST
+      );
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          toast({
+            title: "Error",
+            description: "La categoría solicitada no es válida.",
+          });
+        }
+        throw new Error(`Error al cargar: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setUsers(data);
+      toast({
+        title: "Existoso",
+        description: "Usuario cargado.",
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast({
+        title: "Error",
+        description: "Error al cargar el producto.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <div className="p-8">
@@ -66,7 +108,7 @@ export default function AdminUsersPage() {
                   <TableCell>{user.name || "-"}</TableCell>
                   <TableCell>{user.password || "-"}</TableCell>
                   <TableCell>
-                    {new Date(user.created_at).toLocaleDateString()}
+                    {new Date(user.created_at).toLocaleDateString("es-CO")}
                   </TableCell>
                 </TableRow>
               ))
@@ -74,6 +116,12 @@ export default function AdminUsersPage() {
           </TableBody>
         </Table>
       </div>
+      <UserFormModal
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        onSuccess={fetchUser}
+        user={selectedProduct}
+      />
     </div>
   );
 }

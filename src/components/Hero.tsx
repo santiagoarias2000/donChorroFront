@@ -84,27 +84,60 @@ const install = async () => {
 };
 
   return (
-    <section className="relative lg:min-h-[45vh] min-h-[40vh] overflow-hidden bg-white">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBg})`, backgroundPosition: "center" }}
-      />
+  <section className="relative w-full min-h-0 lg:min-h-[45vh] bg-white overflow-hidden">
 
-      {/* Contenedor del bloque inferior izquierdo */}
-      <div
-        className="absolute top-[72%] right-5 md:top-[75%] md:right-20 lg:top-[76%] lg:right-96 z-10 flex flex-col items-center"
+    {/* Imagen responsiva */}
+    <img
+      src={heroBg}
+      alt="Hero"
+      className="w-full h-full object-cover"
+    />
+
+    {/* ===== BLOQUE PARA CELULAR (aparece debajo de la imagen) ===== */}
+    <div className="block lg:hidden w-full bg-[#770f3a] py-4 px-4 text-center">
+      <button
+        className="
+          font-nulshock bg-[#F6C600] text-black font-extrabold uppercase
+          text-sm px-4 py-3 rounded-full shadow-xl tracking-wide
+          hover:scale-90 transition
+        "
+        onClick={install}
+        disabled={!deferredPrompt}
       >
-        <button
-          className="bg-[#F6C600] text-black font-extrabold uppercase lg:text-xl px-6 py-5 rounded-full shadow-xl tracking-wide hover:scale-90 transition text-sm"
-          onClick={install}
-          disabled={!deferredPrompt}>
-          Descarga nuestra nueva app
-        </button>
+        Descarga nuestra nueva app
+      </button>
 
-        <p className="text-white md:text-lg font-semibold tracking-wide text-sm justify-center">
-          Y llévanos en tu móvil a todas partes
-        </p>
-      </div>
-    </section>
-  );
+      <p className="font-nulshock text-white text-sm font-semibold tracking-wide mt-2">
+        Y llévanos en tu móvil a todas partes
+      </p>
+    </div>
+
+    {/* ===== BLOQUE PARA PC (flotando sobre la imagen) ===== */}
+    <div
+      className="
+        hidden lg:flex
+        absolute z-20 flex-col items-start
+        bottom-5 right-80
+      "
+    >
+      <button
+        className="
+          font-nulshock bg-[#F6C600] text-black font-extrabold uppercase
+          text-lg px-6 py-1 rounded-full shadow-xl tracking-wide
+          hover:scale-90 transition
+        "
+        onClick={install}
+        disabled={!deferredPrompt}
+      >
+        Descarga nuestra nueva app
+      </button>
+
+      <p className="font-nulshock text-white text-base font-semibold tracking-wide mt-2 text-left">
+        Y llévanos en tu móvil a todas partes
+      </p>
+    </div>
+
+  </section>
+);
+
 };

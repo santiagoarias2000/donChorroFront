@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from "sonner";
+import ApiBack from "@/utils/ApiBack";
+import { Upload, X, Image as ImageIcon } from "lucide-react";
 
 type Product = {
   id: string;
@@ -35,6 +37,69 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
     stock: product?.stock || "",
     image_url: product?.image_url || "",
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(product?.image_url || null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const compressImage = (file: File, maxWidth: number = 200, quality: number = 0.7): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("No canvas context"));
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          const base64 = canvas.toDataURL("image/jpeg", quality);
+          resolve(base64);
+        };
+        img.onerror = reject;
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Por favor selecciona una imagen válida");
+      return;
+    }
+
+    try {
+      const compressedBase64 = await compressImage(file);
+      setImagePreview(compressedBase64);
+      setFormData({ ...formData, image_url: compressedBase64 });
+    } catch (error) {
+      toast.error("Error al procesar la imagen");
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setFormData({ ...formData, image_url: "" });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +115,26 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
         stock: parseInt(formData.stock),
         image_url: formData.image_url,
       };
+      const url = product?.id
+        ? ApiBack.URL + ApiBack.PRODUCT_CREATE + `${product.id}/`
+        : ApiBack.URL + ApiBack.PRODUCT_CREATE;
 
+      const method = product?.id ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.error || errorData?.message || "Ocurrió un error inesperado"
+        );
+      }
       if (product?.id) {
         toast.success("Producto actualizado correctamente");
       } else {
@@ -162,14 +246,40 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
           </div>
 
           <div>
-            <Label htmlFor="image_url">URL de Imagen</Label>
-            <Input
-              id="image_url"
-              type="url"
-              value={formData.image_url}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              placeholder="https://ejemplo.com/imagen.jpg"
-            />
+            <Label>Imagen del Producto</Label>
+            <div className="mt-2">
+              {imagePreview ? (
+                <div className="relative inline-block">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-lg border"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-burgundy transition-colors"
+                >
+                  <Upload className="w-8 h-8 text-gray-400" />
+                  <span className="text-sm text-gray-500 mt-1">Subir imagen</span>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

@@ -56,6 +56,7 @@ export const SearchPage = () => {
                 key={product.id}
                 name={product.name}
                 price={product.price}
+                // imagen={product.imagen}
               />
             ))}
           </div>

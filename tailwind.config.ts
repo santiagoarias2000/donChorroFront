@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
+
 
 export default {
   darkMode: ["class"],
@@ -16,6 +18,7 @@ export default {
        fontFamily: {
     nulshock: ["Nulshock", "sans-serif"],
     poppinsSemi: ["PoppinsSemiBold", "sans-serif"],
+    poppinsRegu: ["PoppinsRegular", "sans-serif"],
   },
       colors: {
         border: "hsl(var(--border))",
@@ -99,5 +102,5 @@ export default {
       
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import imagen from "@/assets/imagen_cerveza.jpg";
 
 interface FilterSection {
   title: string;
@@ -94,9 +95,8 @@ export const ProductFilters = ({
       </div>
 
       {/* Promotional Banner Placeholder */}
-      <div className="bg-burgundy rounded-lg p-6 text-center">
-        <div className="text-white font-bold text-xl mb-2">Don Chorro</div>
-        <div className="text-white text-sm opacity-90">LICORERÍA</div>
+      <div className="">
+          <img src={imagen} alt="imagen.tsx" />
       </div>
     </aside>
   );
