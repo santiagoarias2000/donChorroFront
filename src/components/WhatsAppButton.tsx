@@ -2,7 +2,7 @@ import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
 const WhatsAppButton = () => {
-  const phone = "573105743575"; 
+  const phone = "573133133333"; 
 
   return (
     <a
