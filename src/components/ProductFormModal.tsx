@@ -63,8 +63,10 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
             return;
           }
 
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
-          const base64 = canvas.toDataURL("image/jpeg", quality);
+          const base64 = canvas.toDataURL("image/jpeg");
           resolve(base64);
         };
         img.onerror = reject;
@@ -186,15 +188,17 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
               value={formData.category}
               onValueChange={(value) => setFormData({ ...formData, category: value })}
               required
+              
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona una categoría" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="LICORES">Licores</SelectItem>
+                <SelectItem  value="LICORES">Licores</SelectItem>
                 <SelectItem value="CERVEZAS">Cervezas</SelectItem>
                 <SelectItem value="GOLOSINAS">Golosinas</SelectItem>
                 <SelectItem value="CIGARRILLOS">Cigarrillos</SelectItem>
+                <SelectItem value="OTROS">Otros</SelectItem>
               </SelectContent>
             </Select>
           </div>

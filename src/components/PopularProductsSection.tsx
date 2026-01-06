@@ -21,6 +21,8 @@ export const PopularProductsSection = () => {
         ApiBack.URL + ApiBack.PRODUCT_CATEGORY + `${category}`
       );
 
+      
+
       if (!response.ok) {
         if (response.status === 400) {
           toast({
@@ -33,6 +35,7 @@ export const PopularProductsSection = () => {
 
       const data = await response.json();
       setProducts(data);
+            console.log(data);
 
     } catch (err) {
       setError(err.message || "Hubo un error desconocido.");
@@ -101,6 +104,7 @@ export const PopularProductsSection = () => {
         <div className="font-poppins grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {filteredProducts.map((product) => (
             <PopularProductCard
+            imagen={product.imagen}
               key={product.id}
               name={product.name}
               price={product.price}

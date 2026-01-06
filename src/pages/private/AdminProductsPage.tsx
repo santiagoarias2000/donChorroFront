@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -25,47 +25,44 @@ type Product = {
 };
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product>(null);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const fetchProducts = async () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // 🔹 PAGINACIÓN
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
+
+  const fetchProducts = async (page: number) => {
     try {
-    setLoading(true);
-      setError(null); // limpiamos error previo
+      setLoading(true);
 
       const response = await fetch(
-        ApiBack.URL + ApiBack.PRODUCT_LIST
+        `${ApiBack.URL}${ApiBack.PRODUCT_LIST}?page=${page}`
       );
 
       if (!response.ok) {
-        if (response.status === 400) {
-          toast({
-            title: "Error",
-            description: "La categoría solicitada no es válida.",
-          });
-        }
-        throw new Error(`Error al cargar: ${response.statusText}`);
+        throw new Error("Error al cargar productos");
       }
 
       const data = await response.json();
-      setProducts(data);
-      toast({
-        title: "Existoso",
-        description: "Producto cargado.",
-      });
+
+      setProducts(data.results || []);
+      setCurrentPage(data.page || 1);
+      setTotalPages(data.total_pages || 1);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error(error);
       toast({
         title: "Error",
-        description: "Error al cargar el producto.",
+        description: "No se pudieron cargar los productos",
       });
     } finally {
       setLoading(false);
@@ -73,18 +70,18 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+    if (!confirm("¿Eliminar este producto?")) return;
 
     try {
       toast({
-        title: "Existoso",
-        description: "Producto eliminaso.",
+        title: "Éxito",
+        description: "Producto eliminado",
       });
+      fetchProducts(currentPage);
     } catch (error) {
-      console.error("Error deleting product:", error);
       toast({
         title: "Error",
-        description: "No se puede eliminar el producto.",
+        description: "No se pudo eliminar",
       });
     }
   };
@@ -101,8 +98,8 @@ export default function AdminProductsPage() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy"></div>
+      <div className="p-8 flex justify-center">
+        <div className="animate-spin h-10 w-10 border-b-2 border-[#770f3a] rounded-full" />
       </div>
     );
   }
@@ -110,12 +107,12 @@ export default function AdminProductsPage() {
   return (
     <div className="p-8 font-nulshock">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-[#770f3a] font-nulshock">Productos</h1>
+        <h1 className="text-3xl font-bold text-[#770f3a]">Productos</h1>
         <Button
           onClick={handleCreateNew}
-          className="bg-[#770f3a] hover:bg-[#770f3a]/90 text-white"
+          className="bg-[#770f3a] hover:bg-[#770f3a]/90"
         >
-          <Plus className="h-5 w-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Crear Producto
         </Button>
       </div>
@@ -123,26 +120,29 @@ export default function AdminProductsPage() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-[#770f3a] hover:bg-[#770f3a]">
-              <TableHead className="text-white font-semibold">Producto</TableHead>
-              <TableHead className="text-white font-semibold">Categoría</TableHead>
-              <TableHead className="text-white font-semibold">Precio</TableHead>
-              <TableHead className="text-white font-semibold">Stock</TableHead>
-              <TableHead className="text-white font-semibold">Acciones</TableHead>
+            <TableRow className="bg-[#770f3a]">
+              <TableHead className="text-white">Producto</TableHead>
+              <TableHead className="text-white">Categoría</TableHead>
+              <TableHead className="text-white">Precio</TableHead>
+              <TableHead className="text-white">Stock</TableHead>
+              <TableHead className="text-white">Acciones</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  No hay productos registrados
+                <TableCell colSpan={5} className="text-center py-8">
+                  No hay productos
                 </TableCell>
               </TableRow>
             ) : (
               products.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="capitalize">{product.category}</TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell className="capitalize">
+                    {product.category}
+                  </TableCell>
                   <TableCell>${product.price}</TableCell>
                   <TableCell>{product.stock}</TableCell>
                   <TableCell>
@@ -152,14 +152,14 @@ export default function AdminProductsPage() {
                         variant="outline"
                         onClick={() => handleEdit(product)}
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleDelete(product.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="w-4 h-4 text-red-500" />
                       </Button>
                     </div>
                   </TableCell>
@@ -170,10 +170,50 @@ export default function AdminProductsPage() {
         </Table>
       </div>
 
+      {/* 🔹 PAGINACIÓN */}
+      <div className="flex justify-center gap-2 mt-6">
+        <Button
+          variant="outline"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((p) => p - 1)}
+          className={
+            "cursor-pointer hover:bg-[#770f3a]/90"
+          }
+        >
+          Anterior
+        </Button>
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <Button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={
+              page === currentPage
+                ? "bg-[#770f3a] text-white"
+                : ""
+            }
+            variant={page === currentPage ? "default" : "outline"}
+          >
+            {page}
+          </Button>
+        ))}
+
+        <Button
+          variant="outline"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((p) => p + 1)}
+          className={
+            "cursor-pointer hover:bg-[#770f3a]/90"
+          }
+        >
+          Siguiente
+        </Button>
+      </div>
+
       <ProductFormModal
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        onSuccess={fetchProducts}
+        onSuccess={() => fetchProducts(currentPage)}
         product={selectedProduct}
       />
     </div>
