@@ -20,9 +20,6 @@ export const PopularProductsSection = () => {
       const response = await fetch(
         ApiBack.URL + ApiBack.PRODUCT_CATEGORY + `${category}`
       );
-
-      
-
       if (!response.ok) {
         if (response.status === 400) {
           toast({

@@ -197,7 +197,7 @@ export const ProductFormModal = ({ open, onOpenChange, onSuccess, product }: Pro
                 <SelectItem  value="LICORES">Licores</SelectItem>
                 <SelectItem value="CERVEZAS">Cervezas</SelectItem>
                 <SelectItem value="GOLOSINAS">Golosinas</SelectItem>
-                <SelectItem value="CIGARRILLOS">Cigarrillos</SelectItem>
+                <SelectItem value="CIGARILLOS">Cigarrillos</SelectItem>
                 <SelectItem value="OTROS">Otros</SelectItem>
               </SelectContent>
             </Select>
