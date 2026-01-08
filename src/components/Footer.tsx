@@ -1,12 +1,15 @@
 import { Facebook, Instagram, Twitter, Phone, Mail, MapPin } from "lucide-react";
+import monoNegro from "@/assets/mono-negro-cortado.png";
+import logoDonChorro from "@/assets/don-chorro-imagotipo.png";
+
 
 export const Footer = () => {
   return (
     <footer className="relative bg-[#1A1A1A] text-white pt-16 pb-6 px-6 md:px-20 overflow-hidden">
 
       {/* Imagen del mono: visible en móvil también */}
-      <img
-  src="/src/assets/mono-negro-cortado.png"
+ <img
+  src={monoNegro}
   alt="Monkey"
   className="hidden md:block absolute right-0 bottom-0 h-full opacity-100 brightness-40 pointer-events-none select-none"
 />
@@ -19,10 +22,10 @@ export const Footer = () => {
         {/* Logo */}
         <div className="flex flex-col items-center md:items-start">
           <img
-            src="/src/assets/don-chorro-imagotipo.png"
-            alt="Don Chorro Logo"
-            className="w-56 md:w-80 mb-4"
-          />
+  src={logoDonChorro}
+  alt="Don Chorro Logo"
+  className="w-56 md:w-80 mb-4"
+/>
         </div>
 
         {/* Nuestra empresa */}
