@@ -27,7 +27,7 @@ interface Product {
   imagen: string;
 }
 
-export const LiquorsPage = () => {
+export const WhiskeyPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,11 +41,11 @@ export const LiquorsPage = () => {
     try {
       setLoading(true);
       const url =
-        ApiBack.URL + ApiBack.PRODUCT_LIST_LIQUOR + `?page=${page}`;
+        ApiBack.URL + ApiBack.PRODUCT_LIST_LIQUOR_WHISKEY + `?page=${page}`;
 
       const res = await fetch(url);
       const data = await res.json();
-
+    
       setProducts(data.results || []);
       setTotalPages(data.total_pages || 1);
       setCurrentPage(data.page || page);
@@ -83,33 +83,12 @@ export const LiquorsPage = () => {
     setCurrentPage(1);
   };
 
-  const getVisiblePages = () => {
-    const pages = [];
-    const delta = 2; // cuántas páginas antes y después
-
-    for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) {
-      pages.push(i);
-    }
-
-    if (pages[0] > 1) {
-      pages.unshift("...");
-      pages.unshift(1);
-    }
-
-    if (pages[pages.length - 1] < totalPages) {
-      pages.push("...");
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
       <h1 className="font-nulshock text-3xl md:text-4xl font-bold text-center mb-14 p-5 text-[#808080] uppercase bg-[#e6e6e6]">
-        LICORES
+        Whiskey
       </h1>
 
       <div className="mx-auto px-2 sm:px-4 py-8 w-full max-w-full lg:max-w-[1400px] xl:max-w-[1600px]">
@@ -164,19 +143,15 @@ export const LiquorsPage = () => {
                     />
                   </PaginationItem>
 
-                  {getVisiblePages().map((page, i) => (
-                    <PaginationItem key={i}>
-                      {page === "..." ? (
-                        <span className="px-3 py-2 text-muted-foreground">…</span>
-                      ) : (
-                        <PaginationLink
-                          onClick={() => setCurrentPage(page)}
-                          isActive={currentPage === page}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      )}
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <PaginationItem key={i + 1}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(i + 1)}
+                        isActive={currentPage === i + 1}
+                        className="cursor-pointer"
+                      >
+                        {i + 1}
+                      </PaginationLink>
                     </PaginationItem>
                   ))}
 
@@ -206,4 +181,4 @@ export const LiquorsPage = () => {
   );
 };
 
-export default LiquorsPage;
+export default WhiskeyPage;

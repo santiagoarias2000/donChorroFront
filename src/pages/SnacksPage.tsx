@@ -34,29 +34,39 @@ export const SnacksPage = () => {
     const productsPerPage = 20;
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+      const [totalPages, setTotalPages] = useState(1);
 
-    const fetchProducts = async () => {
-        try {
-            const url = ApiBack.URL + ApiBack.PRODUCT_LIST_CANDY
-            const res = await fetch(url);
-            const data = await res.json();
-            setProducts(data);
-        } catch (error) {
-            console.error("Error cargando productos:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    // Filter products
-    const filteredProducts = products.filter((product) => {
-        const matchesTamaño = selectedTamaños.length === 0 || selectedTamaños.includes(product.size);
-        const matchesMarca = selectedMarcas.length === 0 || selectedMarcas.includes(product.name);
-        return matchesTamaño && matchesMarca;
-    });
+  const fetchProducts = async (page: number) => {
+    try {
+      setLoading(true);
+      const url =
+        ApiBack.URL + ApiBack.PRODUCT_LIST_CANDY + `?page=${page}`;
 
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    const startIndex = (currentPage - 1) * productsPerPage;
-    const currentProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+      const res = await fetch(url);
+      const data = await res.json();
+
+      setProducts(data.results || []);
+      setTotalPages(data.total_pages || 1);
+      setCurrentPage(data.page || page);
+    } catch (error) {
+      console.error("Error cargando productos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // 🔹 Filtros SOLO sobre la página actual
+  const filteredProducts = products.filter((product) => {
+    const matchesTamaño =
+      selectedTamaños.length === 0 ||
+      selectedTamaños.includes(product.size);
+
+    const matchesMarca =
+      selectedMarcas.length === 0 ||
+      selectedMarcas.includes(product.name);
+
+    return matchesTamaño && matchesMarca;
+  });
+
 
 
     const handleFilterChange = (filters: { tamaños: string[]; marcas: string[] }) => {
@@ -66,8 +76,8 @@ export const SnacksPage = () => {
     };
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        fetchProducts(currentPage);
+    }, [currentPage]);
 
     return (
         <div className="min-h-screen bg-background">
@@ -108,7 +118,7 @@ export const SnacksPage = () => {
                     {/* Products Grid */}
                     <div className="flex-1">
                         <div className="font-poppinsSemi grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-                            {currentProducts.map((product) => (
+                            {filteredProducts.map((product) => (
                                 <PopularProductCard
                                     key={product.id}
                                     name={product.name}

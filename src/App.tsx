@@ -17,6 +17,14 @@ import AdminCartPage from "./pages/private/AdminCartPage";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { PrivateRoute } from "./components/PrivateRoute";
 import OthersPage from "./pages/OtherPage";
+import { AguardientePage } from "./pages/private/PageLiquors/AguadientePage";
+import { RonPage } from "./pages/private/PageLiquors/RonPage";
+import { WhiskeyPage } from "./pages/private/PageLiquors/WhiskeyPage";
+import { GinebraPage } from "./pages/private/PageLiquors/GinebraPage";
+import { TequilaPage } from "./pages/private/PageLiquors/TequilaPage";
+import CotelesPage from "./pages/private/PageLiquors/Coctelespage";
+import VinoPage from "./pages/private/PageLiquors/VinoPage";
+import ChampagnePage from "./pages/private/PageLiquors/ChampanePage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +40,14 @@ const App = () => (
           <Route path="/carrito" element={<CartPage />} />
           <Route path="/golosinas" element={<SnacksPage />} />
           <Route path="/licores" element={<LiquorsPage />} />
+          <Route path="/licores/Aguardiente" element={< AguardientePage/>} />
+          <Route path="/licores/Ron" element={< RonPage/>} />
+          <Route path="/licores/Whiskey" element={< WhiskeyPage/>} />
+          <Route path="/licores/Ginebra" element={< GinebraPage/>} />
+          <Route path="/licores/Tequila" element={< TequilaPage/>} />
+          <Route path="/licores/Cocteles" element={< CotelesPage/>} />
+          <Route path="/licores/Vino" element={< VinoPage/>} />
+          <Route path="/licores/Champagne" element={< ChampagnePage/>} />
           <Route path="/otros" element={<OthersPage />} />
           <Route path="/buscar" element={<SearchPage />} />
           <Route path="*" element={<NotFound />} />

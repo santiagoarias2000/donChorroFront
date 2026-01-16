@@ -49,6 +49,7 @@ export const CartPage = () => {
                     key={item.id}
                     name={item.name}
                     price={item.price}
+                    imagen={item.imagen}
                     quantity={item.quantity}
                     onRemove={() => removeFromCart(item.id)}
                     onIncrement={() => increment(item.id)}
