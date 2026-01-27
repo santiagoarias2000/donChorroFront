@@ -1,35 +1,51 @@
 import { Facebook, Instagram, Twitter, Phone, Mail, MapPin } from "lucide-react";
 import monoNegro from "@/assets/mono-negro-cortado.png";
 import logoDonChorro from "@/assets/don-chorro-imagotipo.png";
-
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export const Footer = () => {
+  const logoAnim = useScrollAnimation();
+  const col1Anim = useScrollAnimation();
+  const col2Anim = useScrollAnimation();
+  const col3Anim = useScrollAnimation();
+  const col4Anim = useScrollAnimation();
+  const bottomAnim = useScrollAnimation();
+
   return (
     <footer className="relative bg-[#1A1A1A] text-white pt-16 pb-6 px-6 md:px-20 overflow-hidden">
 
-      {/* Imagen del mono: visible en móvil también */}
- <img
-  src={monoNegro}
-  alt="Monkey"
-  className="hidden md:block absolute right-0 bottom-0 h-full opacity-100 brightness-40 pointer-events-none select-none"
-/>
+      {/* Imagen mono */}
+      <img
+        src={monoNegro}
+        alt="Monkey"
+        className="hidden md:block absolute right-0 bottom-0 h-full opacity-100 brightness-40 pointer-events-none select-none"
+      />
 
-
-      {/* GRID del contenido */}
+      {/* GRID */}
       <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12 z-10 
                       text-center md:text-left items-center md:items-start">
 
         {/* Logo */}
-        <div className="flex flex-col items-center md:items-start">
+        <div
+          ref={logoAnim.ref}
+          className={`flex flex-col items-center md:items-start transition-all duration-700 ease-out
+            ${logoAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          `}
+        >
           <img
-  src={logoDonChorro}
-  alt="Don Chorro Logo"
-  className="w-56 md:w-80 mb-4"
-/>
+            src={logoDonChorro}
+            alt="Don Chorro Logo"
+            className="w-56 md:w-80 mb-4"
+          />
         </div>
 
         {/* Nuestra empresa */}
-        <div>
+        <div
+          ref={col1Anim.ref}
+          className={`transition-all duration-700 ease-out delay-100
+            ${col1Anim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          `}
+        >
           <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
             NUESTRA EMPRESA
           </h3>
@@ -41,7 +57,12 @@ export const Footer = () => {
         </div>
 
         {/* Productos */}
-        <div>
+        <div
+          ref={col2Anim.ref}
+          className={`transition-all duration-700 ease-out delay-200
+            ${col2Anim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          `}
+        >
           <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
             PRODUCTOS
           </h3>
@@ -54,7 +75,12 @@ export const Footer = () => {
         </div>
 
         {/* Contacto */}
-        <div className="md:ml-[-140px]">
+        <div
+          ref={col3Anim.ref}
+          className={`md:ml-[-140px] transition-all duration-700 ease-out delay-300
+            ${col3Anim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          `}
+        >
           <h3 className="font-nulshock font-bold text-xl mb-3 tracking-wider">
             CONTACTO
           </h3>
@@ -70,7 +96,13 @@ export const Footer = () => {
       </div>
 
       {/* Línea inferior */}
-      <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-black py-4 text-center text-sm z-10 mt-10 font-poppinsSemi">
+      <div
+        ref={bottomAnim.ref}
+        className={`relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-black py-4 text-center text-sm z-10 mt-10 font-poppinsSemi
+          transition-all duration-700 ease-out
+          ${bottomAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
+        `}
+      >
         © 2025 donchorro
       </div>
     </footer>

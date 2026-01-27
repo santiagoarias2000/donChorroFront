@@ -28,27 +28,27 @@ interface Product {
 }
 
 export const LiquorsPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [selectedTamaños, setSelectedTamaños] = useState<string[]>([]);
   const [selectedMarcas, setSelectedMarcas] = useState<string[]>([]);
 
-  // 🔹 Fetch con paginación backend
-  const fetchProducts = async (page: number) => {
+  const fetchProducts = async (page: number): Promise<void> => {
     try {
       setLoading(true);
+
       const url =
         ApiBack.URL + ApiBack.PRODUCT_LIST_LIQUOR + `?page=${page}`;
 
       const res = await fetch(url);
       const data = await res.json();
 
-      setProducts(data.results || []);
-      setTotalPages(data.total_pages || 1);
-      setCurrentPage(data.page || page);
+      setProducts(data.results ?? []);
+      setTotalPages(data.total_pages ?? 1);
+      setCurrentPage(data.page ?? page);
     } catch (error) {
       console.error("Error cargando productos:", error);
     } finally {
@@ -56,12 +56,10 @@ export const LiquorsPage = () => {
     }
   };
 
-  // 🔹 Cargar cuando cambia la página
   useEffect(() => {
     fetchProducts(currentPage);
   }, [currentPage]);
 
-  // 🔹 Filtros SOLO sobre la página actual
   const filteredProducts = products.filter((product) => {
     const matchesTamaño =
       selectedTamaños.length === 0 ||
@@ -83,20 +81,24 @@ export const LiquorsPage = () => {
     setCurrentPage(1);
   };
 
-  const getVisiblePages = () => {
-    const pages = [];
-    const delta = 2; // cuántas páginas antes y después
+  const getVisiblePages = (): (number | "...")[] => {
+    const pages: (number | "...")[] = [];
+    const delta = 2;
 
-    for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) {
+    for (
+      let i = Math.max(1, currentPage - delta);
+      i <= Math.min(totalPages, currentPage + delta);
+      i++
+    ) {
       pages.push(i);
     }
 
-    if (pages[0] > 1) {
+    if (pages[0] !== 1) {
       pages.unshift("...");
       pages.unshift(1);
     }
 
-    if (pages[pages.length - 1] < totalPages) {
+    if (pages[pages.length - 1] !== totalPages) {
       pages.push("...");
       pages.push(totalPages);
     }
@@ -112,8 +114,8 @@ export const LiquorsPage = () => {
         LICORES
       </h1>
 
-      <div className="mx-auto px-2 sm:px-4 py-8 w-full max-w-full lg:max-w-[1400px] xl:max-w-[1600px]">
-        <div className="font-poppinsSemi flex flex-col lg:flex-row gap-6">
+      <div className="mx-auto px-2 sm:px-4 py-8 w-full max-w-[1600px]">
+        <div className="flex flex-col lg:flex-row gap-6">
           <ProductFilters
             tamaños={selectedTamaños}
             marcas={selectedMarcas}
@@ -136,14 +138,24 @@ export const LiquorsPage = () => {
             {loading ? (
               <p className="text-center">Cargando productos...</p>
             ) : (
-              <div className="font-poppins grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-                {filteredProducts.map((product) => (
-                  <PopularProductCard
+              <div
+                key={currentPage} // 🔥 fuerza re-render y animación
+                className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8"
+              >
+                {filteredProducts.map((product, index) => (
+                  <div
                     key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    imagen={product.imagen}
-                  />
+                    className="animate-fadeUp"
+                    style={{
+                      animationDelay: `${index * 70}ms`,
+                    }}
+                  >
+                    <PopularProductCard
+                      name={product.name}
+                      price={product.price}
+                      imagen={product.imagen}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -167,7 +179,9 @@ export const LiquorsPage = () => {
                   {getVisiblePages().map((page, i) => (
                     <PaginationItem key={i}>
                       {page === "..." ? (
-                        <span className="px-3 py-2 text-muted-foreground">…</span>
+                        <span className="px-3 py-2 text-muted-foreground">
+                          …
+                        </span>
                       ) : (
                         <PaginationLink
                           onClick={() => setCurrentPage(page)}
@@ -189,7 +203,7 @@ export const LiquorsPage = () => {
                       }
                       className={
                         currentPage === totalPages
-                          ? "pointer-events-none hover:bg-[#770f3a]/90"
+                          ? "pointer-events-none opacity-50"
                           : "cursor-pointer hover:bg-[#770f3a]/90"
                       }
                     />
