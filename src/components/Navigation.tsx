@@ -53,12 +53,14 @@ export const Navigation = () => {
             {/* Logo Space */}
             <div className="flex items-center">
               <Link to="/">
-                <div className="w-40 md:w-60 h-16 flex items-center justify-center">
+               <div className="w-32 h-13 md:w-80 md:h-28 flex items-center justify-center">
+  <img
+    src={logo}
+    alt="logo"
+    className="w-full h-full object-contain"
+  />
+</div>
 
-                  <img src={logo} alt="logo" className="max-w-none" />
-
-
-                </div>
               </Link>
             </div>
 

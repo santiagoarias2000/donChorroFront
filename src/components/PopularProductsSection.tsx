@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PopularProductCard } from "./PopularProductCard";
 import ApiBack from "@/utils/ApiBack";
 import { useToast } from "@/hooks/use-toast";
@@ -13,43 +13,49 @@ type Product = {
   price: number;
 };
 
+const BUTTONS = [
+  { label: "CERVEZAS", category: "CERVEZAS" },
+  { label: "CIGARILLOS", category: "CIGARILLOS" },
+  { label: "LICORES", category: "LICORES" },
+
+  { label: "RON", category: "LICORES", sub: "ron" },
+  { label: "AGUARDIENTE", category: "LICORES", sub: "aguardiente" },
+  { label: "WHISKEY", category: "LICORES", sub: "whiskey" },
+  { label: "GINEBRA", category: "LICORES", sub: "ginebra" },
+  { label: "TEQUILA", category: "LICORES", sub: "tequila" },
+  { label: "COCTELES", category: "LICORES", sub: "coctel" },
+  { label: "VINO", category: "LICORES", sub: "vino" },
+  { label: "CHAMPAGNE", category: "LICORES", sub: "champagne" },
+];
+
 export const PopularProductsSection = () => {
-  const [activeCategory, setActiveCategory] = useState<Category>("CERVEZAS");
+  const [activeCategory, setActiveCategory] =
+    useState<Category>("CERVEZAS");
+  const [activeSub, setActiveSub] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isPaused = useRef(false);
+
   const { toast } = useToast();
-
   const titleAnim = useScrollAnimation();
-  const filtersAnim = useScrollAnimation();
 
+  /* ================= FETCH ================= */
   const fetchProducts = async (category: Category) => {
     try {
       setLoading(true);
-      setError(null);
-
-      const response = await fetch(
+      const res = await fetch(
         ApiBack.URL + ApiBack.PRODUCT_CATEGORY + category
       );
-
-      if (!response.ok) {
-        if (response.status === 400) {
-          toast({
-            title: "Error",
-            description: "La categoría solicitada no es válida.",
-          });
-        }
-        throw new Error(`Error al cargar: ${response.statusText}`);
-      }
-
-      const data: Product[] = await response.json();
+      if (!res.ok) throw new Error();
+      const data: Product[] = await res.json();
       setProducts(data);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Hubo un error desconocido.");
-      }
+    } catch {
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar los productos",
+      });
     } finally {
       setLoading(false);
     }
@@ -59,75 +65,110 @@ export const PopularProductsSection = () => {
     fetchProducts(activeCategory);
   }, [activeCategory]);
 
+  /* ================= AUTOSCROLL REAL ================= */
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let raf: number;
+
+    const animate = () => {
+      if (!isPaused.current) {
+        container.scrollLeft += 0.5;
+
+        if (container.scrollLeft >= container.scrollWidth / 2) {
+          container.scrollLeft = 0;
+        }
+      }
+      raf = requestAnimationFrame(animate);
+    };
+
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  /* ================= FILTRO COMO NAVIGATION ================= */
+  const visibleProducts = useMemo(() => {
+    if (!activeSub) return products;
+
+    return products.filter((p) =>
+      p.name.toLowerCase().includes(activeSub)
+    );
+  }, [products, activeSub]);
+
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
 
-        {/* Title */}
         <h2
           ref={titleAnim.ref}
-          className={`
-            font-nulshock text-3xl md:text-4xl font-extrabold text-center mb-8 uppercase
-            transition-all duration-700 ease-out
-            ${titleAnim.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-6"}
-          `}
+          className={`font-nulshock text-3xl md:text-4xl font-extrabold
+            text-center mb-10 uppercase transition-all duration-700
+            ${
+              titleAnim.isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-6"
+            }`}
           style={{ color: "#770f3a" }}
         >
           -Lo Más Pedido-
         </h2>
 
-        {/* Category Filters */}
+        {/* BOTONES */}
         <div
-          ref={filtersAnim.ref}
-          className={`
-            flex flex-wrap justify-center gap-4 mb-10
-            transition-all duration-700 ease-out delay-150
-            ${filtersAnim.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-6"}
-          `}
+          className="mx-auto max-w-[760px] overflow-hidden mb-12"
+          onMouseEnter={() => (isPaused.current = true)}
+          onMouseLeave={() => (isPaused.current = false)}
+          onTouchStart={() => (isPaused.current = true)}
+          onTouchEnd={() => (isPaused.current = false)}
         >
-          {(["CERVEZAS", "CIGARILLOS", "LICORES"] as Category[]).map(
-            (category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`font-nulshock px-6 py-2 rounded-full font-extrabold uppercase text-xl transition-all duration-300
-                  ${
-                    activeCategory === category
-                      ? "bg-gold text-[#a31250] shadow-lg scale-105"
-                      : "bg-transparent text-gray-700 hover:bg-gray-300"
-                  }
-                `}
+          <div
+            ref={scrollRef}
+            className="flex gap-4 px-2 overflow-x-scroll no-scrollbar whitespace-nowrap"
+          >
+            {[...BUTTONS, ...BUTTONS].map((btn, i) => {
+              const isActive = btn.sub
+                ? activeSub === btn.sub
+                : activeCategory === btn.category && !activeSub;
+
+              return (
+                <button
+                  key={`${btn.label}-${i}`}
+                  onClick={() => {
+                    setActiveCategory(btn.category as Category);
+                    setActiveSub(btn.sub ?? null);
+                  }}
+                  className={`font-nulshock px-6 py-2 rounded-full font-extrabold uppercase text-xl transition-all duration-300
+                    ${
+                      isActive
+                        ? "bg-gold text-[#a31250] shadow-lg scale-105"
+                        : "bg-transparent text-gray-700 hover:bg-gray-300"
+                    }`}
+                >
+                  {btn.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* PRODUCTOS */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {!loading &&
+            visibleProducts.map((product, index) => (
+              <div
+                key={product.id}
+                className="animate-fadeUp"
+                style={{ animationDelay: `${index * 80}ms` }}
               >
-                {category}
-              </button>
-            )
-          )}
+                <PopularProductCard
+                  imagen={product.imagen}
+                  name={product.name}
+                  price={product.price}
+                />
+              </div>
+            ))}
         </div>
-
-        {/* Productos */}
-        <div className="font-poppins grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              className="opacity-0 translate-y-6 animate-fadeUp"
-              style={{
-                animationDelay: `${index * 80}ms`,
-                animationFillMode: "forwards",
-              }}
-            >
-              <PopularProductCard
-                imagen={product.imagen}
-                name={product.name}
-                price={product.price}
-              />
-            </div>
-          ))}
-        </div>
-
       </div>
     </section>
   );
