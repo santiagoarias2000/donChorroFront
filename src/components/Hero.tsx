@@ -1,9 +1,12 @@
 
 import heroBg from "@/assets/slider 1.jpg";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Hero = () => {
 const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+const [showIosHint, setShowIosHint] = useState(false);
+
 
 // Detectar si es iOS (Safari)
 const isIOS = () => {
@@ -39,7 +42,7 @@ useEffect(() => {
 // Detecta si se instaló (solo Android)
 useEffect(() => {
   const installedHandler = () => {
-    alert("La aplicación ya está instalada.");
+    toast.success("La aplicación ya está instalada.");
   };
 
   window.addEventListener("appinstalled", installedHandler);
@@ -50,23 +53,19 @@ useEffect(() => {
 const install = async () => {
   // 1️⃣ Ya instalada
   if (isAppInstalled()) {
-    alert("✔ La aplicación ya está instalada en tu dispositivo.");
+    toast.success("✔ La aplicación ya está instalada en tu dispositivo.");
     return;
   }
 
   // 2️⃣ iPhone → mostrar mensaje especial
   if (isIOS()) {
-    alert(
-      "📱 Para instalar la aplicación en iPhone:\n\n" +
-        "1. Toca el botón Compartir (cuadrado con flecha ↑)\n" +
-        "2. Selecciona 'Agregar al inicio'\n"
-    );
+    setShowIosHint(true);
     return;
   }
 
   // 3️⃣ Android sin prompt disponible
   if (!deferredPrompt) {
-    alert("⚠ La instalación no está disponible en este momento.");
+    toast.error("⚠ La instalación no está disponible en este momento.");
     return;
   }
 
@@ -74,12 +73,11 @@ const install = async () => {
   deferredPrompt.prompt();
   const result = await deferredPrompt.userChoice;
 
-  console.log("Resultado:", result.outcome);
 
   if (result.outcome === "accepted") {
-    alert("✔ Instalación aceptada");
+    toast.success("✔ Instalación aceptada");
   } else {
-    alert("❌ Instalación cancelada");
+    toast.error("❌ Instalación cancelada");
   }
 };
 
@@ -136,6 +134,23 @@ const install = async () => {
         Y llévanos en tu móvil a todas partes
       </p>
     </div>
+{showIosHint && (
+  <div className="ios-install-overlay">
+    <div className="ios-install-card">
+      <p>
+        📱 Para agregar esta app al inicio:
+        <br />
+        1️⃣ Toca <strong>Compartir</strong>
+        <br />
+        2️⃣ Luego <strong>Agregar a inicio</strong>
+      </p>
+
+      <button onClick={() => setShowIosHint(false)}>
+        Entendido
+      </button>
+    </div>
+  </div>
+)}
 
   </section>
 );

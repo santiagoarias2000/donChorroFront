@@ -40,3 +40,46 @@
 .read-the-docs {
   color: #888;
 }
+
+
+.ios-install-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.ios-install-card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
+  border-radius: 16px 16px 0 0;
+  animation: slideUp 0.35s ease-out;
+}
+
+.ios-install-card button {
+  margin-top: 12px;
+  width: 100%;
+  background: #007aff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
