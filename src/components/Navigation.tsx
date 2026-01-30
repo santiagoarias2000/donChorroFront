@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Menu, ShoppingCart, User, Search, ChevronUp, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo.svg"
+import logo from "@/assets/logo.png"
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { LoginModal } from "./LoginModal";
+import { useCartCount } from "@/hooks/useCartCount";
 
 const licorTypes = [
   { name: "Ron", slug: "ron" },
@@ -34,11 +35,14 @@ export const Navigation = () => {
       setSearchQuery("");
     }
   };
+
+  const cartCount = useCartCount();
   useEffect(() => {
-  if (!isOpen) {
-    setOpenLicores(false);
-  }
-}, [isOpen]);
+    if (!isOpen) {
+      setOpenLicores(false);
+    }
+  }, [isOpen]);
+
 
 
   return (
@@ -53,12 +57,14 @@ export const Navigation = () => {
             {/* Logo Space */}
             <div className="flex items-center">
               <Link to="/">
-                <div className="w-40 md:w-60 h-16 flex items-center justify-center">
-
-                  <img src={logo} alt="logo" className="max-w-none" />
-
-
+                <div className="w-32 h-13 md:w-80 md:h-28 flex items-center justify-center">
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
+
               </Link>
             </div>
 
@@ -162,14 +168,24 @@ export const Navigation = () => {
                 <User className="h-5 w-5" />
               </Button>
               <Link to="/carrito">
-                <Button variant="ghost" size="icon" className="text-white  transition-colors font-black text-lg uppercase tracking-wide
-             flex items-center gap-2 hover:bg-[#F6C600]   
-                hover:text-[#770f3a]   
-                  hover:shadow-lg       
-                hover:scale-105 
-                hover:rounded-full
-                hover:p-2  ">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative text-white transition-colors font-black text-lg uppercase tracking-wide
+      flex items-center gap-2 hover:bg-[#F6C600]   
+      hover:text-[#770f3a] hover:shadow-lg       
+      hover:scale-105 hover:rounded-full hover:p-2"
+                >
                   <ShoppingCart className="h-5 w-5" />
+
+                  {cartCount > 0 && (
+                    <span
+                      className="absolute -top-1 -right-1 bg-red-600 text-white
+          text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+                    >
+                      {cartCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
               <Button
@@ -209,71 +225,70 @@ export const Navigation = () => {
             </div>
           )}
 
-{isOpen && (
-  <div className="md:hidden py-4 border-t border-[#F6C600]">
-    <div className="flex flex-col space-y-4">
+          {isOpen && (
+            <div className="md:hidden py-4 border-t border-[#F6C600]">
+              <div className="flex flex-col space-y-4">
 
-      {/* LICOORES */}
-      <button
-        type="button"
-        onClick={() => setOpenLicores(!openLicores)}
-        className="flex items-center justify-between font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
-      >
-        <span>Licores</span>
-        <i
-          className={`fa-solid fa-chevron-down transition-transform ${
-            openLicores ? "rotate-180" : ""
-          }`}
-        />
-      </button>
+                {/* LICOORES */}
+                <button
+                  type="button"
+                  onClick={() => setOpenLicores(!openLicores)}
+                  className="flex items-center justify-between font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
+                >
+                  <span>Licores</span>
+                  <i
+                    className={`fa-solid fa-chevron-down transition-transform ${openLicores ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
 
-      {/* SUBMENÚ LICOORES */}
-      {openLicores && (
-        <div className="ml-4 flex flex-col space-y-3 border-l border-burgundy-light pl-4">
-          <a
-            href="/licores"
-            className="text-white hover:text-gold transition-colors"
-          >
-            Todos los Licores
-          </a>
+                {/* SUBMENÚ LICOORES */}
+                {openLicores && (
+                  <div className="ml-4 flex flex-col space-y-3 border-l border-burgundy-light pl-4">
+                    <a
+                      href="/licores"
+                      className="text-white hover:text-gold transition-colors"
+                    >
+                      Todos los Licores
+                    </a>
 
-          {licorTypes.map((type) => (
-            <a
-              key={type.slug}
-              href={`/licores/${type.slug}`}
-              className="text-white hover:text-gold transition-colors"
-            >
-              {type.name}
-            </a>
-          ))}
-        </div>
-      )}
+                    {licorTypes.map((type) => (
+                      <a
+                        key={type.slug}
+                        href={`/licores/${type.slug}`}
+                        className="text-white hover:text-gold transition-colors"
+                      >
+                        {type.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
 
-      {/* OTROS LINKS */}
-      <a
-        href="/cervezas"
-        className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
-      >
-        Cervezas
-      </a>
+                {/* OTROS LINKS */}
+                <a
+                  href="/cervezas"
+                  className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
+                >
+                  Cervezas
+                </a>
 
-      <a
-        href="/golosinas"
-        className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
-      >
-        Golosinas
-      </a>
+                <a
+                  href="/golosinas"
+                  className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
+                >
+                  Golosinas
+                </a>
 
-      <a
-        href="#mas"
-        className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
-      >
-        Más
-      </a>
+                <a
+                  href="#mas"
+                  className="font-nulshock text-white hover:text-gold transition-colors font-semibold uppercase"
+                >
+                  Más
+                </a>
 
-    </div>
-  </div>
-)}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

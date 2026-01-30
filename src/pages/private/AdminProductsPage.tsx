@@ -12,6 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import ApiBack from "@/utils/ApiBack";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type Product = {
   id: string;
@@ -105,22 +113,33 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="p-8 font-nulshock">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-[#770f3a]">Productos</h1>
+    <div className="p-4 md:p-8 font-nulshock container mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-[#770f3a]">
+          Productos
+        </h1>
+
         <Button
           onClick={handleCreateNew}
-          className="bg-[#770f3a] hover:bg-[#770f3a]/90"
+          className="bg-[#770f3a] hover:bg-[#770f3a]/90 w-full md:w-auto"
         >
           <Plus className="w-5 h-5 mr-2" />
           Crear Producto
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <Table>
+      <div
+        className="
+      bg-white rounded-lg
+      w-full
+      overflow-x-auto overflow-y-auto
+      max-h-[55vh]
+      md:max-h-[70vh]
+    "
+      >
+        <Table className="min-w-[800px]">
           <TableHeader>
-            <TableRow className="bg-[#770f3a]">
+            <TableRow className="bg-[#770f3a] hover:bg-[#770f3a]/90">
               <TableHead className="text-white">Producto</TableHead>
               <TableHead className="text-white">Categoría</TableHead>
               <TableHead className="text-white">Precio</TableHead>
@@ -172,42 +191,49 @@ export default function AdminProductsPage() {
 
       {/* 🔹 PAGINACIÓN */}
       <div className="flex justify-center gap-2 mt-6">
-        <Button
-          variant="outline"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((p) => p - 1)}
-          className={
-            "cursor-pointer hover:bg-[#770f3a]/90"
-          }
-        >
-          Anterior
-        </Button>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        setCurrentPage((p) => Math.max(1, p - 1))
+                      }
+                      className={
+                        currentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer hover:bg-[#770f3a]/90"
+                      }
+                    />
+                  </PaginationItem>
 
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <Button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={
-              page === currentPage
-                ? "bg-[#770f3a] text-white"
-                : ""
-            }
-            variant={page === currentPage ? "default" : "outline"}
-          >
-            {page}
-          </Button>
-        ))}
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <PaginationItem key={i + 1}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(i + 1)}
+                        isActive={currentPage === i + 1}
+                        className="cursor-pointer"
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
 
-        <Button
-          variant="outline"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((p) => p + 1)}
-          className={
-            "cursor-pointer hover:bg-[#770f3a]/90"
-          }
-        >
-          Siguiente
-        </Button>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setCurrentPage((p) =>
+                          Math.min(totalPages, p + 1)
+                        )
+                      }
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none hover:bg-[#770f3a]/90"
+                          : "cursor-pointer hover:bg-[#770f3a]/90"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
       </div>
 
       <ProductFormModal

@@ -28,6 +28,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   // ⬆️ guardar cada vez que cambie
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
+      window.dispatchEvent(new Event("cartUpdated"));
   }, [cartItems]);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {

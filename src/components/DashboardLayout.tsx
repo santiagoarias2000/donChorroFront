@@ -3,7 +3,7 @@ import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Package, Users, ShoppingCart, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo.png";
 
 export const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ export const DashboardLayout = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
     const { toast } = useToast();
+const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
   const handleLogout = async () => {
@@ -39,7 +40,43 @@ export const DashboardLayout = () => {
   return (
     <div className="min-h-screen flex w-full bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-80 bg-[#770f3a] text-white flex flex-col">
+<button
+  onClick={() => setSidebarOpen(true)}
+  className="
+    fixed top-4 left-4 z-30
+    bg-[#770f3a] text-white
+    p-2 rounded-lg shadow-lg
+  "
+>
+  ☰
+</button>
+
+{sidebarOpen && (
+  <div
+    className="fixed inset-0 bg-black/50 z-30"
+    onClick={() => setSidebarOpen(false)}
+  />
+)}
+
+<aside
+  className={`
+    fixed inset-y-0 left-0
+    w-64 md:w-72 lg:w-80
+    bg-[#770f3a] text-white
+    flex flex-col
+    z-40
+    transform transition-transform duration-300 ease-in-out
+    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+  `}
+>
+  <button
+    className="absolute top-4 right-4 text-white"
+    onClick={() => setSidebarOpen(false)}
+  >
+    ✕
+  </button>
+
+
         {/* Logo */}
         <div className="p-8 border-b border-[#F6C600]">
         <img src={logo} alt="logo.svg" />
