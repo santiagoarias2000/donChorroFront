@@ -162,6 +162,24 @@ const install = async () => {
           Y llévanos en tu móvil a todas partes
         </p>
       </div>
+      {showIosHint && (
+  <div className="ios-install-overlay">
+    <div className="ios-install-card">
+      <p>
+        📱 Para agregar esta app al inicio:
+        <br />
+        1️⃣ Toca <strong>Compartir</strong>
+        <br />
+        2️⃣ Luego <strong>Agregar a inicio</strong>
+      </p>
+
+      <button onClick={() => setShowIosHint(false)}>
+        Entendido
+      </button>
+    </div>
+  </div>
+)}
+
     </section>
   );
 };
