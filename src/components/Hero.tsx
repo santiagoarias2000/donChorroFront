@@ -163,21 +163,29 @@ const install = async () => {
         </p>
       </div>
       {showIosHint && (
-  <div className="ios-install-overlay">
-    <div className="ios-install-card">
+<div
+  className="ios-hint-wrapper"
+  onMouseEnter={() => setShowIosHint(true)}
+  onMouseLeave={() => setShowIosHint(false)}
+  onClick={() => setShowIosHint(!showIosHint)} // para iPhone
+>
+  <button className="install-btn">
+    Instalar app
+  </button>
+
+  {showIosHint && (
+    <div className="ios-hint-tooltip">
       <p>
         📱 Para agregar esta app al inicio:
         <br />
-        1️⃣ Toca <strong>Compartir</strong>
+        <strong>1.</strong> Toca <strong>Compartir</strong>
         <br />
-        2️⃣ Luego <strong>Agregar a inicio</strong>
+        <strong>2.</strong> Luego <strong>Agregar a inicio</strong>
       </p>
-
-      <button onClick={() => setShowIosHint(false)}>
-        Entendido
-      </button>
     </div>
-  </div>
+  )}
+</div>
+
 )}
 
     </section>
