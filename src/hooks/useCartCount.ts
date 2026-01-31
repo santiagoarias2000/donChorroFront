@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 
 interface CartItem {
-  qty: number;
+quantity: number;
 }
 
 export const useCartCount = (): number => {
   const [count, setCount] = useState<number>(0);
 
   const calculateCount = () => {
-    const storedCart = localStorage.getItem("carrito");
+    const storedCart = localStorage.getItem("cart");
     const cart: CartItem[] = storedCart ? JSON.parse(storedCart) : [];
 
-    const total = cart.reduce((sum, item) => sum + item.qty, 0);
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
     setCount(total);
   };
 

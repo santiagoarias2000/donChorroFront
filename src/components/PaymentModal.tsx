@@ -4,18 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
+
+interface CartItem {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+}
 
 interface PaymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   total: number;
+  items: CartItem[];
 }
 
-export const PaymentModal = ({ open, onOpenChange, total }: PaymentModalProps) => {
+export const PaymentModal = ({ open, onOpenChange, total, items, }: PaymentModalProps) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+  const { clearCart } = useCart();
+  const [isSending, setIsSending] = useState(false);
+
 
 
   const handlePay = () => {
@@ -49,23 +61,44 @@ export const PaymentModal = ({ open, onOpenChange, total }: PaymentModalProps) =
     });
   }
 
+  const buildProductsMessage = () => {
+    return items
+      .map((item) => {
+        const subtotal = item.price * item.quantity;
+        return `• ${item.name}
+  Cantidad: ${item.quantity}
+  Precio: $${item.price.toLocaleString("es-CO")}
+  Subtotal: $${subtotal.toLocaleString("es-CO")}`;
+      })
+      .join("\n");
+  };
+
+  const getOrderDateTime = () => {
+  return new Date().toLocaleString("es-CO", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
   const DOMI_VALUE = 7000;
 
   const domicilio = total <= 31500 ? DOMI_VALUE : 0;
   const totalConDomicilio = total + domicilio;
 
   const buildWhatsappMessage = () => `
-Hola soy ${name}
- Dirección: ${address}
- Teléfono: ${phone}
+  Nuevo pedido Don Chorro
+  Fecha y hora: ${getOrderDateTime()}
+  Hola soy ${name}
+  Dirección: ${address}
+  Teléfono: ${phone}
 
-Quiero confirmar mi compra.
+  *Detalle del pedido*
+  ${buildProductsMessage()}
+  Valor productos: $${total.toLocaleString("es-CO")}
+  Domicilio: $${domicilio.toLocaleString("es-CO")}
+  Total pagado: $${totalConDomicilio.toLocaleString("es-CO")}
 
-Valor productos: $${total.toLocaleString("es-CO")}
-Domicilio: $${domicilio.toLocaleString("es-CO")}
-Total pagado: $${totalConDomicilio.toLocaleString("es-CO")}
-
-Ya realicé el pago. Adjunto pantallazo para validación 
+  Ya realicé el pago. Adjunto pantallazo para validación 
 `;
 
 
@@ -79,6 +112,12 @@ Ya realicé el pago. Adjunto pantallazo para validación
     const url = `https://wa.me/573133133333?text=${encodeURIComponent(message)}`;
 
     window.open(url, "_blank");
+    clearCart();
+
+    setTimeout(() => {
+      setIsSending(false);
+      setShowPayment(false);
+    }, 1000);
 
     setName("");
     setAddress("");
@@ -96,69 +135,64 @@ Ya realicé el pago. Adjunto pantallazo para validación
               Finalizar pago
             </DialogTitle>
           </DialogHeader>
-            <form
-  onSubmit={(e) => {
-    e.preventDefault(); // evita recargar
-    onOpenChange(false);
-    setShowPayment(true);
-  }}
->
-          <div className="space-y-4 mt-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // evita recargar
+              onOpenChange(false);
+              setShowPayment(true);
+            }}
+          >
+            <div className="space-y-4 mt-4">
 
-            <div>
-              <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Nombre Completo</Label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ej: Juan Pérez"
-                required
-                title="Escriba su nombre completo"
-              />
+              <div>
+                <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Nombre Completo</Label>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ej: Juan Pérez"
+                  required
+                  title="Escriba su nombre completo"
+                />
+              </div>
+
+              <div>
+                <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Dirección</Label>
+                <Input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Ej: Calle 123 #45-67"
+                  required
+                  title="Escriba su dirección completa con barrio"
+                />
+              </div>
+
+              <div>
+                <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Teléfono</Label>
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Ej: 3222222222"
+                  required
+                  pattern="[0-9]{10}"
+                  title="Debe tener 10 dígitos"
+                  maxLength={10}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="font-poppinsSemi w-full  bg-[#770f3a] hover:bg-[#770f3a]/90 text-[#F6C600] font-semibold"
+              >
+                Pagar facilmente
+              </Button>
+
+              <Button
+                onClick={handlePay}
+                className="font-poppinsSemi w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-[#F6C600] font-semibold"
+              >
+                Pagar con ePayco
+              </Button>
             </div>
-
-            <div>
-              <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Dirección</Label>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Ej: Calle 123 #45-67"
-                required
-                title="Escriba su dirección completa con barrio"
-              />
-            </div>
-
-            <div>
-              <Label className="font-poppinsSemi text-[#770f3a] font-semibold">Teléfono</Label>
-              <Input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Ej: 3222222222"
-                required
-                pattern="[0-9]{10}"
-title="Debe tener 10 dígitos"
-maxLength={10}
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="font-poppinsSemi w-full  bg-[#770f3a] hover:bg-[#770f3a]/90 text-[#F6C600] font-semibold"
-            >
-              Pagar facilmente
-            </Button>
-
-            <Button
-              onClick={handlePay}
-              className="font-poppinsSemi w-full bg-[#770f3a] hover:bg-[#770f3a]/90 text-[#F6C600] font-semibold"
-            >
-              Pagar con ePayco
-            </Button>
-
-
-
-
-
-          </div>
           </form>
         </DialogContent>
       </Dialog>
@@ -185,13 +219,13 @@ maxLength={10}
             <p className="text-sm text-gray-600 mb-4">
               Realiza el pago y envíanos el pantallazo por WhatsApp para validar tu pedido.
             </p>
-z
+
             <div className="flex gap-3">
               <button
                 onClick={whatsappLinkPay}
                 className="flex-1 bg-[#00E676] text-black py-2 rounded-lg font-semibold hover:bg-[#00d166] transition"
               >
-                Enviar comprobante
+                {isSending ? "Enviando..." : "Enviar comprobante"}
               </button>
               <button
                 onClick={() => setShowPayment(false)}

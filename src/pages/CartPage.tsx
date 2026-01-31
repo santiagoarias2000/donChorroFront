@@ -114,6 +114,7 @@ export const CartPage = () => {
         open={paymentOpen}
         onOpenChange={setPaymentOpen}
         total={totalPrice}
+         items={cartItems}
       />
 
       <Footer />

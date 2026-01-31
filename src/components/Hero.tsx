@@ -2,6 +2,13 @@ import heroBg from "@/assets/slider 1.jpg";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -163,29 +170,24 @@ const install = async () => {
         </p>
       </div>
       {showIosHint && (
-<div
-  className="ios-hint-wrapper"
-  onMouseEnter={() => setShowIosHint(true)}
-  onMouseLeave={() => setShowIosHint(false)}
-  onClick={() => setShowIosHint(!showIosHint)} // para iPhone
->
-  <button className="install-btn">
-    Instalar app
-  </button>
+<Dialog open={showIosHint} onOpenChange={setShowIosHint}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>📱 Agregar a inicio en iphone</DialogTitle>
+    </DialogHeader>
 
-  {showIosHint && (
-    <div className="ios-hint-tooltip">
-      <p>
-        📱 Para agregar esta app al inicio:
-        <br />
-        <strong>1.</strong> Toca <strong>Compartir</strong>
-        <br />
-        <strong>2.</strong> Luego <strong>Agregar a inicio</strong>
-      </p>
-    </div>
-  )}
-</div>
+    <p className="text-sm">
+      1. Toca <strong>los 3 puntos en la parte inferior o superior</strong><br />
+      2. Toca <strong>compartir</strong><br />
+      3. Toca <strong>mas</strong><br />
+      4. Luego <strong>agregar a inicio</strong>
+    </p>
 
+    <Button onClick={() => setShowIosHint(false)} className="bg-[#770f3a] mt-4 text-white hover:bg-[#590b2e]">
+      Entendido
+    </Button>
+  </DialogContent>
+</Dialog>
 )}
 
     </section>
